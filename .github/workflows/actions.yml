@@ -6,21 +6,20 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 
-# Prevent concurrent runs on the same branch to avoid state lock conflicts
+# Avoid concurrent runs on the same ref (prevents backend/state issues)
 concurrency:
   group: terraform-${{ github.ref }}
   cancel-in-progress: false
 
 env:
   TF_IN_AUTOMATION: true
-  # Set ARM_* for AzureRM provider and azurerm backend
   ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
   ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
   ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
 
 jobs:
-  fmt-validate-plan:
+  plan:
     name: Format, Validate & Plan
     runs-on: ubuntu-latest
     defaults:
@@ -39,7 +38,7 @@ jobs:
       - name: Terraform Init
         run: terraform init -input=false -no-color
 
-      - name: Terraform Format
+      - name: Terraform Format (check)
         run: terraform fmt -check -diff -no-color
 
       - name: Terraform Validate
@@ -48,7 +47,7 @@ jobs:
       - name: Terraform Plan
         run: terraform plan -input=false -no-color -out=tfplan
 
-      - name: Save plan artifact
+      - name: Upload plan artifact
         uses: actions/upload-artifact@v4
         with:
           name: tfplan
@@ -59,9 +58,9 @@ jobs:
   apply:
     name: Apply
     runs-on: ubuntu-latest
-    needs: fmt-validate-plan
+    needs: plan
     environment:
-      # Optional: require manual approval in GitHub Environments
+      # Optional: add protection rules / approvals in GitHub Environments > production
       name: production
     defaults:
       run:
@@ -91,5 +90,4 @@ jobs:
       - name: Terraform Output
         run: terraform output -no-color
 
-      - name: Deployment Status
-       
+           - name: Deployment Status
