@@ -1,5 +1,5 @@
 
-rg_name  = "rg-terraform-demo-dev"
+rg_name  = "1-c4a4dc0c-playground-sandbox"
 location = "eastus"
 
 # must be globally unique; adjust for your org
