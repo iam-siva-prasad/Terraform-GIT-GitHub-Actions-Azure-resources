@@ -1,2 +1,19 @@
-# Terraform-GIT-GitHub-Actions-Azure-resources
-This project builds a CI/CD pipeline using Terraform, Git, GitHub, and GitHub Actions to automate Azure resource deployment. It leverages Infrastructure as Code (IaC) for secure, scalable provisioning, integrating version control and workflow automation for cloud infrastructure.
+
+# Terraform · Git · GitHub · Actions · Azure Resources
+
+A complete CI/CD pipeline that deploys Azure resources using **Terraform**, **Git**, **GitHub**, and **GitHub Actions** with **OIDC (no secrets PAT)**. It enables secure, scalable, repeatable Infrastructure as Code (IaC) across **Dev / QA / Prod** environments.
+
+!Pipeline
+
+---
+
+## 🚀 Key Features
+- **IaC with Terraform**: Versioned, repeatable Azure infrastructure.
+- **GitHub Actions CI/CD**: fmt → validate → plan → apply with approvals.
+- **Secure Auth via OIDC**: Federated credentials—no long‑lived client secrets.
+- **Multi-Env**: Isolated state & variables per environment.
+- **Compliance**: Terraform format & validation gates; PR plans as comments.
+- **State Backends**: Azure Storage remote state with locking via Azure Blob.
+
+---
+
