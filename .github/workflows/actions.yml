@@ -83,9 +83,9 @@ jobs:
           path: .
 
       - name: Terraform Apply
-        run: terraform apply -input=false -no-color tfplan
+               run: terraform apply -input=false -no-color tfplan
 
-           - name: Terraform Output
+      - name: Terraform Output
         run: terraform output -no-color
 
       - name: Deployment Status
