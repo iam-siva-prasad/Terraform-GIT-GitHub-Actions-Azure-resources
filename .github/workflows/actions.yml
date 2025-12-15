@@ -90,4 +90,4 @@ jobs:
       - name: Terraform Output
         run: terraform output -no-color
 
-           - name: Deployment Status
+      - name: Deployment Status
