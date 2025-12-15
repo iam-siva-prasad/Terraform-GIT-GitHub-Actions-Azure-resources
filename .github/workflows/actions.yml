@@ -10,16 +10,17 @@ jobs:
   init:
     runs-on: ubuntu-latest
     env:
-      # Provider variables (if used in .tfvars)
-      TF_VAR_tenant_id:       ${{ secrets.tenant_id }}
-      TF_VAR_subscription_id: ${{ secrets.subscription_id }}
-      TF_VAR_client_id:       ${{ secrets.client_id }}
-      TF_VAR_client_secret:   ${{ secrets.client_secret }}
-      # Backend auth (works for init)
+      # (Optional) Also expose ARM_* for backend auth
       ARM_CLIENT_ID:          ${{ secrets.client_id }}
       ARM_CLIENT_SECRET:      ${{ secrets.client_secret }}
       ARM_TENANT_ID:          ${{ secrets.tenant_id }}
       ARM_SUBSCRIPTION_ID:    ${{ secrets.subscription_id }}
+
+      # Your TF_VARs (used by provider later)
+      TF_VAR_tenant_id:       ${{ secrets.tenant_id }}
+      TF_VAR_subscription_id: ${{ secrets.subscription_id }}
+      TF_VAR_client_id:       ${{ secrets.client_id }}
+      TF_VAR_client_secret:   ${{ secrets.client_secret }}
     steps:
       - uses: actions/checkout@v4
 
@@ -34,6 +35,13 @@ jobs:
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: latest
+
+      # Optional: quick check that backend SA/container exist
+      - name: Verify backend storage (optional)
+        run: |
+          az storage account show -g rg-tfstate -n sttfstateunique01 --only-show-errors 1>/dev/null
+          az storage container show --account-name sttfstateunique01 --name tfstate --auth-mode login --only-show-errors 1>/dev/null
+          echo "✅ Backend storage reachable."
 
       - name: Terraform Init (remote backend)
         run: terraform init -backend-config=backend.hcl -input=false -reconfigure
@@ -111,4 +119,4 @@ jobs:
       - name: Terraform Output
         run: terraform output
       - name: Deployment Status
-        run: echo "✅ Your Terraform code is
+        run: echo "
