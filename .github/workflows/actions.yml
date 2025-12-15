@@ -93,4 +93,4 @@ jobs:
         run: terraform apply -auto-approve -var-file=env/dev.tfvars
       - name: Terraform Output
         run: terraform output
-      -      - name: Deployment Status
+      - name: Deployment Status
